@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
 using System.Text;
 using System.Transactions;
+using ChoreDataModel.Interfaces;
 
 namespace ChoreDataModel.Model
 {
-    public class Partner
+    [Table(("Partner"))]
+    public class Partner: IChoreEntity
     {
         [Key]
         public int PartnerId { get; set; }

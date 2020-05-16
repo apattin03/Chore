@@ -1,28 +1,29 @@
 ﻿using System;
-using Microsoft.AspNetCore.Hosting;
+using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
-using Autofac.Extensions.DependencyInjection;
-using AutoMapper.Configuration;
 using ChoreDataModel.Context;
 using ChoreDataModel.Interfaces;
 using ChoreDataModel.Repositories;
-using ChoreServiceBusHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NServiceBus;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Protocols;
 
-namespace Chore
+namespace ChoreServiceBusHost
 {
     public class Program
     {
-
-        private IConfiguration Configuration { get; }
-
+        private readonly IConfiguration _configuration;
         public Program(IConfiguration configuration)
         {
-            Configuration = configuration;
+            _configuration = configuration;
         }
+
+
         public static async Task Main(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
@@ -32,18 +33,21 @@ namespace Chore
             Console.ReadKey();
             await host.StopAsync();
         }
-
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureServices(services =>
+                .UseSystemd().ConfigureLogging((context, logging) =>
+                {
+                    logging.AddConfiguration(context.Configuration.GetSection("Logging"));
+                })
+                .ConfigureServices((context, services) =>
                 {
                     services.AddEntityFrameworkSqlServer()
                         .AddDbContext<ChoreContext>((options) =>
                         {
-                            services.AddDbContext<ChoreContext>(options =>
-                                options.UseSqlServer(("AnimeListAppContext")));
-                            services.AddScoped(typeof(IChoreRepository<>), typeof(ChoreRepository<>)); ;
+                            options.UseSqlServer(context.Configuration.GetConnectionString("Chore"),c => c.MigrationsAssembly("ChoreServiceBusHost"));
+
                         });
+                    services.AddScoped(typeof(IChoreRepository<>), typeof(ChoreRepository<>));
                 })
                 .UseNServiceBus(c =>
                 {
@@ -52,7 +56,6 @@ namespace Chore
                     endpointConfiguration.UsePersistence<LearningPersistence>();
                     return endpointConfiguration;
                 });
+
     }
-
 }
-
