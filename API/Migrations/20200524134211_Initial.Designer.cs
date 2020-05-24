@@ -7,10 +7,10 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Chores.Migrations
+namespace API.Migrations
 {
     [DbContext(typeof(ChoreContext))]
-    [Migration("20200524124419_Initial")]
+    [Migration("20200524134211_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

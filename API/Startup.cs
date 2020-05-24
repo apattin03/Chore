@@ -3,7 +3,6 @@ using ChoreDataModel.Context;
 using ChoreDataModel.Interfaces;
 using ChoreDataModel.Model;
 using ChoreDataModel.Repositories;
-
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -32,7 +31,7 @@ namespace Chores
             services.AddControllers();
             services.AddEntityFrameworkSqlServer().AddDbContext<ChoreContext>((options) =>
             {
-                options.UseSqlServer(Configuration.GetConnectionString("ChoreContext"), b => b.MigrationsAssembly("Chores"));
+                options.UseSqlServer(Configuration.GetConnectionString("ChoreContext"), b => b.MigrationsAssembly("API"));
             });
             services.AddScoped(typeof(IChoreRepository<Chore>), typeof(ChoreRepository<Chore>));
             services.AddCors(options =>
@@ -68,11 +67,11 @@ namespace Chores
             app.UseRouting();
 
             app.UseAuthorization();
-            app.UseAuthentication();
+            //app.UseAuthentication();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers(); 
+                endpoints.MapControllers();
             });
         }
     }

@@ -1,26 +1,25 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ChoreDataModel.Interfaces;
 using ChoreDataModel.Model;
-using Chores.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Chores.Controllers
+namespace API.Controllers
 {
-    [Route("api/[controller]")]
     [Authorize]
     [ApiController]
+    [Route("[controller]")]
     public class ChoreController : ControllerBase
     {
-   
+
         private readonly IChoreRepository<Chore> _choreRepository;
 
-        public ChoreController( IChoreRepository<Chore> choreRepository)
+        public ChoreController(IChoreRepository<Chore> choreRepository)
         {
-     
+
             _choreRepository = choreRepository;
         }
 
@@ -34,13 +33,13 @@ namespace Chores.Controllers
         public async Task Post(Chore chore)
         {
             _choreRepository.Add(chore);
-             await _choreRepository.SaveChangesAsync();
+            await _choreRepository.SaveChangesAsync();
         }
 
         [HttpPut("{id}")]
         public async Task<ActionResult> Put(string id, Chore chore)
         {
-            var exists =  _choreRepository.Where(c => c.ChoreID == chore.ChoreID);
+            var exists = _choreRepository.Where(c => c.ChoreID == chore.ChoreID);
 
             if (exists == null)
                 return NotFound();
