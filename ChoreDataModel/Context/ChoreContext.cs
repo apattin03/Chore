@@ -11,9 +11,9 @@ namespace ChoreDataModel.Context
     {
     }
         public DbSet<Chore> Chores { get; set; }
-        public DbSet<Partner> Partners { get; set; }
-        public DbSet<ChoreSprint> ChoreSprints { get; set; }
+        //public DbSet<Partner> Partners { get; set; }
+        //public DbSet<ChoreSprint> ChoreSprints { get; set; }
 
-        
+
     }
 }

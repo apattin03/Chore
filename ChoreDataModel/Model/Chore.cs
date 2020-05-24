@@ -12,9 +12,9 @@ namespace ChoreDataModel.Model
     {
         [Key]
         public int ChoreID { get; set; }
-        public int AssignedPartnerId { get; set; }
+        public int? AssignedPartnerId { get; set; }
         public string ChoreName { get; set; }
-        public bool Completed { get; set; }
-        public bool Assigned { get; set; }
+        public bool? Completed { get; set; }
+        public bool? Assigned { get; set; }
     }
 }
