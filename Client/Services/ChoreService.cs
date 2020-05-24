@@ -19,19 +19,33 @@ namespace Chores.Services
             _choreRepository = choreRepository;
         }
 
-        public async Task<Chore> AddCustomChoreAndDontAssign(int choreId, string choreName, bool assigned)
+
+        public async Task<List<Chore>> GetAllChores()
         {
-            var chore = new ChoreDataModel.Model.Chore()
-            {
-                ChoreName = choreName,
-                ChoreID = choreId,
-                Assigned = assigned
-            };
-            _choreRepository.Add(chore);
-            await _choreRepository.SaveChangesAsync();
-            return chore;
+          var chores = await _choreRepository.ToListAsync();
+          return chores;
         }
 
-    
+        public void AddChore(Chore chore)
+        {
+            _choreRepository.Add(chore);
+        }
+
+        public async Task<Chore> UpdateChore(Chore chore)
+        {
+           _choreRepository.Update(chore);
+
+           return chore;
+        }
+
+        public void DeleteChore(Chore chore)
+        {
+            _choreRepository.Delete(chore);
+        }
+
+        public async Task<int> SaveChangesAsync()
+        {
+           return await _choreRepository.SaveChangesAsync();
+        }
     }
 }

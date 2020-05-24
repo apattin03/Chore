@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ChoreDataModel.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace ChoreDataModel.Repositories
 {
@@ -23,7 +24,7 @@ namespace ChoreDataModel.Repositories
 
         public void Add(T item)
         {
-            _dbSet.Add(item);
+             _dbSet.AddAsync(item);
         }
 
         public Task AddRangeAsync(IEnumerable<T> items)
@@ -85,5 +86,13 @@ namespace ChoreDataModel.Repositories
         {
             return _dbSet.AsNoTracking();
         }
+
+        public void Update(T item)
+        {
+          _context.Update(item);
+        }
+
+        
+
     }
 }

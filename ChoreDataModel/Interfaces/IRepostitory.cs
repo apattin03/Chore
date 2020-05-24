@@ -29,5 +29,6 @@ namespace ChoreDataModel.Interfaces
         IQueryable<T> AsQueryable();
 
         IQueryable<T> AsNoTracking();
+        void Update(T item);
     }
 }

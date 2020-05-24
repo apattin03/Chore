@@ -1,10 +1,17 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using ChoreDataModel.Model;
 
 
 namespace Chores.Interfaces
 {
     public interface IChoreService
     {
-        Task<ChoreDataModel.Model.Chore> AddCustomChoreAndDontAssign(int choreId, string choreName, bool assigned);
+        Task<List<Chore>> GetAllChores();
+        void AddChore(Chore chore);
+        Task<Chore> UpdateChore(Chore chore);
+        void DeleteChore(Chore chore);
+        Task<int> SaveChangesAsync();
+
     }
 }
