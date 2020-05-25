@@ -24,7 +24,6 @@ namespace API.Controllers
             _choreRepository = choreRepository;
         }
 
-
         [HttpGet]
         public async Task<ActionResult<List<Chore>>> Get()
         {

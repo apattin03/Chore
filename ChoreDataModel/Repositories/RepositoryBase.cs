@@ -27,15 +27,6 @@ namespace ChoreDataModel.Repositories
              _dbSet.AddAsync(item);
         }
 
-        public Task AddRangeAsync(IEnumerable<T> items)
-        {
-            return _dbSet.AddRangeAsync(items);
-        }
-
-        public void AddRange(IEnumerable<T> items)
-        {
-            _dbSet.AddRange(items);
-        }
 
         public void Delete(T item)
         {
@@ -67,11 +58,6 @@ namespace ChoreDataModel.Repositories
             return _dbSet.ToListAsync();
         }
 
-        public List<T> ToList()
-        {
-            return _dbSet.ToList();
-        }
-
         public IQueryable<T> Where(Expression<Func<T, bool>> exp)
         {
             return _dbSet.AsQueryable().Where(exp);
@@ -80,11 +66,6 @@ namespace ChoreDataModel.Repositories
         public IQueryable<T> AsQueryable()
         {
             return _dbSet;
-        }
-
-        public IQueryable<T> AsNoTracking()
-        {
-            return _dbSet.AsNoTracking();
         }
 
         public void Update(T item)

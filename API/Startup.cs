@@ -24,7 +24,6 @@ namespace API
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-
         }
 
         public IConfiguration Configuration { get; }
@@ -60,7 +59,7 @@ namespace API
 
             services.AddSingleton<IOktaClient>(new OktaClient(new OktaClientConfiguration
             {
-                OktaDomain = Configuration["Okta:Authority"],
+                OktaDomain = "https://dev-736404.okta.com",
                 Token = Configuration["Okta:token"]
             }));
 
@@ -83,7 +82,6 @@ namespace API
             }
 
             app.UseHttpsRedirection();
-
             app.UseRouting();
             app.UseCors("VueCorsPolicy");
             app.UseAuthentication();

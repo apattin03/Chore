@@ -20,15 +20,11 @@ namespace ChoreDataModel.Interfaces
         int SaveChanges();
 
         void Add(T item);
-        Task AddRangeAsync(IEnumerable<T> items);
-        void AddRange(IEnumerable<T> items);
         void Delete(T item);
 
         Task<List<T>> ToListAsync();
-        List<T> ToList();
         IQueryable<T> AsQueryable();
 
-        IQueryable<T> AsNoTracking();
         void Update(T item);
     }
 }

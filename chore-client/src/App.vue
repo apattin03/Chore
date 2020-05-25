@@ -39,11 +39,9 @@
       this.$auth.loginRedirect()
     },
     async onRouteChange() {
-      // every time a route is changed refresh the user details
       await this.refreshUser()
     },
     async refreshUser() {
-      // get new user details and store it to user object
       this.user = await this.$auth.getUser()
     },
     async logout() {
