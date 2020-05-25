@@ -58,7 +58,7 @@ namespace API.Controllers
 
             _choreRepository.Delete(entity);
             await _choreRepository.SaveChangesAsync();
-            return Ok();
+            return Ok("success");
         }
     }
 }

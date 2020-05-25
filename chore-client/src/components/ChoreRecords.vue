@@ -13,22 +13,31 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="chore in chores" :key="chore.ChoreID">
-              <td>{{ chore.ChoreID }}</td>
-              <td>{{ chore.ChoreName }}</td>
+            <tr v-for="chore in chores" :key="chore.choreID">
+              <td>{{ chore.choreID }}</td>
+              <td>{{ chore.choreName }}</td>
               <td class="text-right">
                 <a href="#" @click.prevent="updateChore(chore)">Edit</a> -
-                <a href="#" @click.prevent="deleteChore(chore.id)">Delete</a>
+                <a href="#" @click.prevent="deleteChore(chore.choreID)"
+                  >Delete</a
+                >
               </td>
             </tr>
           </tbody>
         </table>
       </b-col>
       <b-col lg="3">
-        <b-card :title="(model.id ? 'Edit Chore ID#' + model.id : 'New Chore')">
+        <b-card
+          :title="
+            model.choreID ? 'Edit Chore ID#' + model.choreID : 'New Chore'
+          "
+        >
           <form @submit.prevent="createChore">
             <b-form-group label="Chore Name">
-              <b-form-input type="text" v-model="model.ChoreName"></b-form-input>
+              <b-form-input
+                type="text"
+                v-model="model.choreName"
+              ></b-form-input>
             </b-form-group>
             <div>
               <b-btn type="submit" variant="success">Save Record</b-btn>
@@ -41,59 +50,55 @@
 </template>
 
 <script>
-  import api from '@/ChoreApiService';
+import api from "@/ChoreApiService";
 
-  export default {
-    data() {
-      return {
-        loading: false,
-        records: [],
-        model: {}
-      };
+export default {
+  data() {
+    return {
+      loading: false,
+      chores: [],
+      model: {}
+    };
+  },
+  async created() {
+    this.getAll();
+  },
+  methods: {
+    async getAll() {
+      this.loading = true;
+      console.log(this.chores);
+      console.log(this.model);
+      try {
+        this.chores = await api.getAll();
+      } finally {
+        this.loading = false;
+      }
     },
-    async created() {
-      this.getAll()
+    async updateChore(chore) {
+      // We use Object.assign() to create a new (separate) instance
+      this.model = Object.assign({}, chore);
     },
-    methods: {
-      async getAll() {
-        this.loading = true
+    async createChore() {
+      const isUpdate = !!this.model.choreID;
 
-        try {
-          this.records = await api.getAll()
-        } finally {
-          this.loading = false
-        }
-      },
-      async updateChore(chore) {
-        // We use Object.assign() to create a new (separate) instance
-        this.model = Object.assign({}, chore)
-      },
-      async createChore() {
-        const isUpdate = !!this.model.id;
+      if (isUpdate) {
+        await api.update(this.model.choreID, this.model);
+      } else {
+        await api.create(this.model);
+      }
 
-        if (isUpdate) {
-          await api.update(this.model.id, this.model)
-        } else {
-          await api.create(this.model)
-        }
+      // Clear the data inside of the form
+      this.model = {};
 
-        // Clear the data inside of the form
-        this.model = {}
-
- 
-        await this.getAll()
-      },
-      async deleteChore(id) {
-        if (confirm('Are you sure you want to delete this record?')) {
-
-          if (this.model.id === id) {
-            this.model = {}
-          }
-
-          await api.delete(id)
-          await this.getAll()
-        }
+      await this.getAll();
+    },
+    async deleteChore(choreID) {
+      let request = await api.delete(choreID);
+      if (request === "success") {
+        this.model = {};
+        await this.getAll();
       }
     }
   }
+};
 </script>
