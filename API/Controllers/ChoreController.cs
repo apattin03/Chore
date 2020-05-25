@@ -9,9 +9,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
+
+    [Route("api/[controller]")]
     [Authorize]
     [ApiController]
-    [Route("[controller]")]
     public class ChoreController : ControllerBase
     {
 
@@ -22,6 +23,7 @@ namespace API.Controllers
 
             _choreRepository = choreRepository;
         }
+
 
         [HttpGet]
         public async Task<ActionResult<List<Chore>>> Get()

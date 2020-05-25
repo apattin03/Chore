@@ -2,7 +2,7 @@ import Vue from 'vue'
 import axios from 'axios'
 
 const client = axios.create({
-  baseURL: 'https://localhost:44340/',
+  baseURL: 'https://localhost:44340/api/chore',
   json: true
 })
 

@@ -7,19 +7,24 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using Okta.Sdk;
+using Okta.Sdk.Configuration;
+using Microsoft.AspNetCore.SpaServices.Extensions;
 
-namespace Chores
+namespace API
 {
     public class Startup
     {
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+
         }
 
         public IConfiguration Configuration { get; }
@@ -52,27 +57,44 @@ namespace Chores
                     options.Authority = Configuration["Okta:Authority"];
                     options.Audience = "api://default";
                 });
+
+            services.AddSingleton<IOktaClient>(new OktaClient(new OktaClientConfiguration
+            {
+                OktaDomain = Configuration["Okta:Authority"],
+                Token = Configuration["Okta:token"]
+            }));
+
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            var builder = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
+                .AddEnvironmentVariables();
+
             if (env.IsDevelopment())
             {
+                builder.AddUserSecrets(Configuration["okta:token"]);
                 app.UseDeveloperExceptionPage();
+                
             }
 
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
+            app.UseCors("VueCorsPolicy");
+            app.UseAuthentication();
             app.UseAuthorization();
-            //app.UseAuthentication();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
+
+
+            builder.Build();
         }
     }
 }
