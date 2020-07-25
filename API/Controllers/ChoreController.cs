@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using API.Interfaces;
 using ChoreDataModel.Interfaces;
 using ChoreDataModel.Model;
 using Microsoft.AspNetCore.Authorization;
@@ -14,49 +15,41 @@ namespace API.Controllers
     public class ChoreController : ControllerBase
     {
 
-        private readonly IChoreRepository<Chore> _choreRepository;
+        private readonly IChoreService _choreService;
 
-        public ChoreController(IChoreRepository<Chore> choreRepository)
+        public ChoreController(IChoreService choreService)
         {
-
-            _choreRepository = choreRepository;
+            _choreService = choreService;
         }
 
         [HttpGet]
         public async Task<ActionResult<List<Chore>>> Get()
         {
-            return await _choreRepository.ToListAsync();
+            return await _choreService.Get();
         }
 
         [HttpPost]
         public async Task Post(Chore chore)
         {
-            _choreRepository.Add(chore);
-            await _choreRepository.SaveChangesAsync();
+            await _choreService.CreateChore(chore);
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> Put(string id, Chore chore)
+        public async Task<ActionResult> Put(Chore chore)
         {
-            var exists = _choreRepository.Where(c => c.ChoreID == chore.ChoreID);
-
-            if (exists == null)
-                return NotFound();
-
-            _choreRepository.Update(chore);
-            await _choreRepository.SaveChangesAsync();
-
+            await _choreService.UpdateChore(chore);
             return Ok();
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
-            var entity = await _choreRepository.FirstOrDefaultAsync(c => c.ChoreID == id);
-
-            _choreRepository.Delete(entity);
-            await _choreRepository.SaveChangesAsync();
-            return Ok("success");
+            var deletedChore = await _choreService.DeleteChore(id);
+            if (deletedChore)
+            {
+                return Ok("success");
+            }
+            return NotFound();
         }
     }
 }
