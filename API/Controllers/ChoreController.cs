@@ -3,14 +3,12 @@ using System.Threading.Tasks;
 using API.Interfaces;
 using ChoreDataModel.Interfaces;
 using ChoreDataModel.Model;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
 
     [Route("api/[controller]")]
-    [Authorize]
     [ApiController]
     public class ChoreController : ControllerBase
     {

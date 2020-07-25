@@ -33,7 +33,7 @@ namespace API.Services
         {
             var exists = _choreRepository.Where(c => c.ChoreID == chore.ChoreID);
 
-            //want to throw exception here?
+            //TODO: Create exception service
 
             _choreRepository.Update(chore);
             await _choreRepository.SaveChangesAsync();

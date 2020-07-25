@@ -1,9 +1,10 @@
 
+using API.Interfaces;
+using API.Services;
 using ChoreDataModel.Context;
 using ChoreDataModel.Interfaces;
 using ChoreDataModel.Model;
 using ChoreDataModel.Repositories;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -11,10 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Okta.Sdk;
-using Okta.Sdk.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.HttpsPolicy;
+
 
 namespace API
 {
@@ -36,6 +34,7 @@ namespace API
                 options.UseSqlServer(Configuration.GetConnectionString("ChoreContext"), b => b.MigrationsAssembly("API"));
             });
             services.AddScoped(typeof(IChoreRepository<Chore>), typeof(ChoreRepository<Chore>));
+            services.AddScoped(typeof(IChoreService), typeof(ChoreService));
             services.AddCors(options =>
             {
                 options.AddPolicy("VueCorsPolicy", builder =>
@@ -48,18 +47,6 @@ namespace API
                 });
             });
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
-                {
-                    options.Authority = Configuration["Okta:Authority"];
-                    options.Audience = "api://default";
-                });
-
-            services.AddSingleton<IOktaClient>(new OktaClient(new OktaClientConfiguration
-            {
-                OktaDomain = Configuration["Okta:OktaDomain"],
-                Token = Configuration["Okta:token"]
-            }));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
         }
@@ -73,15 +60,12 @@ namespace API
 
             if (env.IsDevelopment())
             {
-                builder.AddUserSecrets(Configuration["okta:token"]);
                 app.UseDeveloperExceptionPage();
 
             }
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseCors("VueCorsPolicy");
-            app.UseAuthentication();
-            app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

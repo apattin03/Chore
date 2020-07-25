@@ -66,8 +66,6 @@ export default {
   methods: {
     async getAll() {
       this.loading = true;
-      console.log(this.chores);
-      console.log(this.model);
       try {
         this.chores = await api.getAll();
       } finally {
@@ -75,7 +73,6 @@ export default {
       }
     },
     async updateChore(chore) {
-      // We use Object.assign() to create a new (separate) instance
       this.model = Object.assign({}, chore);
     },
     async createChore() {
@@ -87,7 +84,6 @@ export default {
         await api.create(this.model);
       }
 
-      // Clear the data inside of the form
       this.model = {};
 
       await this.getAll();
